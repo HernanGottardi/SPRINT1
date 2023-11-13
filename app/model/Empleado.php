@@ -3,23 +3,19 @@
 
 include_once(__DIR__ . '/../DB/conexionDB.php');
 
+
 class Empleado 
 {
-
+    //public $id_usuario;
     public $id;
-    public $id_usuario;
     public $id_area;
-    public $nombre;
-    public $fecha_inicio;
-    public $fecha_fin;
+    public $nombre_puesto;
 
-    public static function crearEmpleado($id_usuario, $id_area, $nombre, $fecha_inicio)
+    public static function crearEmpleado($id_area, $nombre_puesto)
     {
         $empleadoAux = new Empleado();
-        $empleadoAux->id_usuario = $id_usuario;
         $empleadoAux->id_area = $id_area;
-        $empleadoAux->nombre = $nombre;
-        $empleadoAux->fecha_inicio = $fecha_inicio;
+        $empleadoAux->nombre_puesto = $nombre_puesto;
         
         return $empleadoAux;
     }
@@ -27,15 +23,12 @@ class Empleado
     public function agregarEmpleado()
     {
         $instanciaAcceso = ConexionDB::acceso();
-        $consulta = $instanciaAcceso->consulta("INSERT INTO empleado (Id_area, Nombre, Fecha_inicio, Fecha_fin, Id_usuario) VALUES (:ia, :n, :fi, :ff, :iu)");
+        $consulta = $instanciaAcceso->consulta("INSERT INTO empleado (id_area, nombre_puesto) VALUES (:ia, :np)");
         // Bindeo:
         $consulta->bindValue(":ia", $this->id_area, PDO::PARAM_STR);
-        $consulta->bindValue(":n", $this->nombre, PDO::PARAM_STR);
-        $consulta->bindValue(":fi", $this->fecha_inicio, PDO::PARAM_STR);
-        $consulta->bindValue(":ff", $this->fecha_fin, PDO::PARAM_STR);
-        $consulta->bindValue(":iu", $this->id_usuario, PDO::PARAM_STR);
+        $consulta->bindValue(":np", $this->nombre_puesto, PDO::PARAM_STR);
 
-        return $consulta->execute(); // Devuelve true si la inserción fue exitosa, false en caso contrario.
+        return $consulta->execute(); 
     }
 
 
@@ -47,6 +40,29 @@ class Empleado
 
         return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public static function puestoExiste($nombre_puesto)
+    {
+ 
+        $instanciaAcceso = ConexionDB::acceso();
+        $consulta = $instanciaAcceso->consulta("SELECT * FROM empleado where nombre_puesto = :n");
+        $consulta->bindValue(":n", $nombre_puesto, PDO::PARAM_STR);
+        $consulta->execute();
+
+        $resultados = $consulta->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!empty($resultados)) 
+        {
+            return true;
+        } 
+        else 
+        {
+            return false;
+        }
+    }
+
+  
+
 }
 
 ?>

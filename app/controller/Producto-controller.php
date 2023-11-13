@@ -8,7 +8,6 @@ class controllerProducto
     {
         $producto = Producto::crearProducto($area_producto, $pedido_asociado, $estado, $descripcion, $costo, $tiempo_desde);
         $res = Producto::agregarProducto($producto);
-        // bool
         return $res;
         
     }

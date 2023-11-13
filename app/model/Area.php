@@ -6,12 +6,13 @@ include_once(__DIR__ . '/../DB/conexionDB.php');
  class Area {
         public $id;
         public $descripcion;
-        public static $areas_trabajo = array(
-            'Mozo' => 1,
-            'Cocinero' => 2,
-            'Barman' => 3,
-            'Admin' => 4
-        );
+        
+        // public static $areas_trabajo = array(
+        //     'Mozo' => 1,
+        //     'Cocinero' => 2,
+        //     'Barman' => 3,
+        //     'Admin' => 4
+        // );
 
         public function __construct(){}
 

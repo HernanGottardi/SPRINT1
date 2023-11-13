@@ -7,7 +7,6 @@ class ConexionDB
     public static $objetoConexion;
     public $objetoPDO;
 
-
     private function __construct()
 {
     try

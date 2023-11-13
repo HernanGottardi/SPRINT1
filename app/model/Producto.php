@@ -3,11 +3,12 @@
 include_once(__DIR__ . '/../DB/conexionDB.php');
 include_once(__DIR__ . './models/Area.php');
 
- class Producto{
+ class Producto
+ {
 
     public $id;
-    public $area_producto;
-    public $pedido_asociado;
+    public $id_area_producto;
+    public $id_pedido_asociado;
     public $estado;
     public $descripcion;
     public $costo;
@@ -26,22 +27,22 @@ include_once(__DIR__ . './models/Area.php');
         $this->id = $id;
     }
 
-    // Getter y Setter para $area_producto
-    public function getAreaProducto() {
-        return $this->area_producto;
+    // Getter y Setter para $id_area_producto
+    public function getIdAreaProducto() {
+        return $this->id_area_producto;
     }
 
-    public function setAreaProducto($area_producto) {
-        $this->area_producto = $area_producto;
+    public function setIdAreaProducto($id_area_producto) {
+        $this->id_area_producto = $id_area_producto;
     }
 
-    // Getter y Setter para $pedido_asociado
-    public function getPedidoAsociado() {
-        return $this->pedido_asociado;
+    // Getter y Setter para $id_pedido_asociado
+    public function getIdPedidoAsociado() {
+        return $this->id_pedido_asociado;
     }
 
-    public function setPedidoAsociado($pedido_asociado) {
-        $this->pedido_asociado = $pedido_asociado;
+    public function setIdPedidoAsociado($id_pedido_asociado) {
+        $this->id_pedido_asociado = $id_pedido_asociado;
     }
 
     // Getter y Setter para $estado
@@ -98,38 +99,41 @@ include_once(__DIR__ . './models/Area.php');
         $this->duracion = $duracion;
     }
 
-    public static function crearProducto($area_producto, $pedido_asociado, $estado, $descripcion, $costo, $tiempo_desde) {
-        $dish = new Producto();
+    public static function crearProducto($id_area_producto, $id_pedido_asociado, $estado, $descripcion, $costo, $tiempo_desde) 
+    {
+        $producto = new Producto();
         // Puedes utilizar los setters para establecer los valores de los atributos
-        $dish->setAreaProducto($area_producto);
-        $dish->setPedidoAsociado($pedido_asociado);
-        $dish->setEstado($estado);
-        $dish->setDescripcion($descripcion);
-        $dish->setCosto($costo);
-        $dish->setTiempoDesde($tiempo_desde);
+        $producto->setIdAreaProducto($id_area_producto);
+        $producto->setIdPedidoAsociado($id_pedido_asociado);
+        $producto->setEstado($estado);
+        $producto->setDescripcion($descripcion);
+        $producto->setCosto($costo);
+        $producto->setTiempoDesde($tiempo_desde);
 
-        return $dish;
+        return $producto;
     }
 
-    public function calcularTiempoFinalizado(){
-        $newDate = new DateTime($this->getTiempoDesde());
-        $newDate = $newDate->modify('+'.$this->getDuracion().' minutes');
-        $this->setTiempoTerminado($newDate->format('Y-m-d H:i:s'));
+    public function calcularTiempoFinalizado()
+    {
+        $nuevaFecha = new DateTime($this->getTiempoDesde());
+        $nuevaFecha = $nuevaFecha->modify('+'.$this->getDuracion().' minutes');
+        $this->setTiempoTerminado($nuevaFecha->format('Y-m-d H:i:s'));
     }
 
-    public static function agregarProducto($producto){
+    public static function agregarProducto($producto)
+    {
         $objDataAccess = ConexionDB::acceso();
-        $query = $objDataAccess->consulta("INSERT INTO `producto` (`area_producto`, `pedido_asociado`, `estado`, `descripcion`, `costo`, `tiempo_desde`) 
+        $consulta = $objDataAccess->consulta("INSERT INTO `producto` (`id_area_producto`, `id_pedido_asociado`, `estado`, `descripcion`, `costo`, `tiempo_desde`) 
         VALUES (:area_producto, :pedido_asociado, :estado, :descripcion, :costo, :tiempo_desde)");
         
-        $query->bindValue(':area_producto', $producto->getAreaProducto());
-        $query->bindValue(':pedido_asociado', $producto->getPedidoAsociado());
-        $query->bindValue(':estado', $producto->getEstado());
-        $query->bindValue(':descripcion', $producto->getDescripcion());
-        $query->bindValue(':costo', $producto->getCosto());
-        $query->bindValue(':tiempo_desde', $producto->getTiempoDesde());
+        $consulta->bindValue(':area_producto', $producto->getAreaProducto());
+        $consulta->bindValue(':pedido_asociado', $producto->getIdPedidoAsociado());
+        $consulta->bindValue(':estado', $producto->getEstado());
+        $consulta->bindValue(':descripcion', $producto->getDescripcion());
+        $consulta->bindValue(':costo', $producto->getCosto());
+        $consulta->bindValue(':tiempo_desde', $producto->getTiempoDesde());
        
-        return $query->execute();
+        return $consulta->execute();
 
     }
 

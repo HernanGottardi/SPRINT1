@@ -5,19 +5,19 @@
  {
     public $id;
     public $codigo_mesa;
-    public $id_empleado;
+    public $id_usuario;
     public $estado;
 
     public function __construct() {}
 
-    public static function crearMesa($table_code, $employee_id, $state) 
+    public static function crearMesa($codigo_mesa, $id_cliente, $estado) 
     {
-        $table = new Mesa();
-        $table->setCodigoMesa($table_code);
-        $table->setIdEmpleado($employee_id);
-        $table->setEstado($state);
+        $mesa = new Mesa();
+        $mesa->setCodigoMesa($codigo_mesa);
+        $mesa->setIdUsuario($id_cliente);
+        $mesa->setEstado($estado);
 
-        return $table;
+        return $mesa;
     }
 
     //--- Getters ---//
@@ -29,8 +29,8 @@
         return $this->codigo_mesa;
     }
 
-    public function getIdEmpleado(){
-        return $this->id_empleado;
+    public function getIdUsuario(){
+        return $this->id_usuario;
     }
 
     public function getEstado(){
@@ -47,8 +47,8 @@
         $this->codigo_mesa = $codigo;
     }
 
-    public function setIdEmpleado($id){
-        $this->id_empleado = $id;
+    public function setIdUsuario($id){
+        $this->id_usuario = $id;
     }
 
     public function setEstado($estado){
@@ -65,11 +65,11 @@
 
     public static function agregarMesa($mesa){
         $objDataAccess = ConexionDB::acceso();
-        $query = $objDataAccess->consulta('INSERT INTO mesa (codigo_mesa, id_empleado, estado) 
-        VALUES (:table_code, :employee_id, :state)');
-        $query->bindValue(':table_code', $mesa->getCodigoMesa());
-        $query->bindValue(':employee_id', $mesa->getIdEmpleado());
-        $query->bindValue(':state', $mesa->getEstado());
+        $query = $objDataAccess->consulta('INSERT INTO mesa (codigo_mesa, id_usuario, estado) 
+        VALUES (:codigo_mesa, :id_usuario, :estado)');
+        $query->bindValue(':codigo_mesa', $mesa->getCodigoMesa());
+        $query->bindValue(':id_usuario', $mesa->getIdUsuario());
+        $query->bindValue(':estado', $mesa->getEstado());
         
 
         return $query->execute();

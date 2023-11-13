@@ -1,13 +1,18 @@
 <?php
 
-include_once(__DIR__ . '/controller/Empleado-controller.php');
-include_once(__DIR__ . '/validaciones/validarEmpleado.php');
+include_once(__DIR__ . '/validaciones/validarUsuario.php');
 
 //include_once(__DIR__ . '/controller/Producto-controller.php');
 include_once(__DIR__ . '/validaciones/validarProducto.php');
 
+include_once(__DIR__ . '/validaciones/validarUsuario.php');
+include_once(__DIR__ . '/controller/UsuarioController.php');
+
+
 include_once(__DIR__ . '/controller/Pedido-controller.php');
 include_once(__DIR__ . '/controller/Mesa-controller.php');
+
+include_once(__DIR__ . '/middlewares/LoggerMW.php');
 
 
 // Habilita la visualización de errores en PHP
@@ -34,79 +39,24 @@ $app->addErrorMiddleware(true, true, true);
 // Middleware para analizar el cuerpo de las solicitudes HTTP
 $app->addBodyParsingMiddleware();
 
-// Definición de rutas
-$app->get('[/]', function (Request $request, Response $response) {
-
-    if (isset($_GET['Accion'])) 
-    {
-        switch ($_GET['Accion']) 
-        {
-            case 'ListarEmpleados':
-                $result = controllerEmpleado::listarEmpleados(); 
-                break;
-            case 'ListarProductos':
-                $result = controllerProducto::listarProductos();
-                break;
-            case 'ListarPedidos':
-                $result = controllerPedido::listarPedidos();
-                break;
-            case 'ListarMesas':
-                $result = controllerMesa::listarMesas();
-                break;
-            default:
-                $result = ['message' => 'Acción no válida'];
-                break;
-        }
-        $response->getBody()->write(json_encode($result));
-        return $response->withHeader('Content-Type', 'application/json');
-    }
-    else 
-    {
-        $result = ['message' => 'La clave "Accion" no se encontró en la solicitud GET'];
-        $response->getBody()->write(json_encode($result));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(400); // Código de respuesta 400 para solicitud incorrecta
-    }
-});
 
 
-$app->post('[/]', function (Request $request, Response $response) {
-    
-    // Obtener el cuerpo de la solicitud POST como un arreglo asociativo
-    $data = $request->getParsedBody();
+$app->group('/users', function (RouteCollectorProxy $group) 
+{
+    $group->get('[/]', \UsuarioController::class . ':listarUsuarios');
+    $group->post('[/]', \UsuarioController::class . ':altaUsuario');
+    $group->delete('[/]', \UsuarioController::class . ':BorrarUsuario');
 
-    if (isset($data['Accion'])) 
-    {
-        switch ($data['Accion']) 
-        {
-            case 'AltaEmpleado':
-                $result = validarEmpleado::validar(); 
-                break;
-            case 'AltaProducto':
-                $result = validarProducto::validar();
-                break;
-            case 'AltaPedido':
-                $result = controllerPedido::altaPedido();
-                break;
-            case 'AltaMesa':
-                $result = controllerMesa::altaMesa();
-                break;
-            default:
-                $result = ['message' => 'Acción no válida'];
-                break;
-        }
 
-        $response->getBody()->write(json_encode($result));
-        return $response->withHeader('Content-Type', 'application/json');
-    } 
-    else 
-    {
-        $result = ['message' => 'La clave "Accion" no se encontró en la solicitud POST'];
-        $response->getBody()->write(json_encode($result));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(400); // Código de respuesta 400 para solicitud incorrecta
-    }
-});
+})->add(new LoggerMiddleware());
 
-// Inicia la aplicación Slim
+
+
+
+
+
+
+
 $app->run();
 
 ?>
